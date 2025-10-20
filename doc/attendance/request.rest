@@ -1,0 +1,182 @@
+### Register User
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "password": "password123",
+  "role": "EMPLOYEE"
+}
+
+### Register Admin
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "Super Admin",
+  "email": "admin@example.com",
+  "password": "admin123",
+  "role": "ADMIN"
+}
+
+### Login User
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "password123"
+}
+
+### Login Admin
+POST http://localhost:3000/api/users/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+
+### Get Current User
+GET http://localhost:3000/api/users/current
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Update User
+PATCH http://localhost:3000/api/users
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "name": "John Updated",
+  "password": "newpassword123"
+}
+
+### Logout User
+DELETE http://localhost:3000/api/users/logout
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Check In
+POST http://localhost:3000/api/attendance/check-in
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "workMode": "OFFICE",
+  "notes": "Working from office today"
+}
+
+### Check Out
+POST http://localhost:3000/api/attendance/check-out
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Today's Attendance
+GET http://localhost:3000/api/attendance/today
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Attendance History with Filters
+GET http://localhost:3000/api/attendance/history?page=1&limit=10&filters={"status":"PRESENT","workMode":"OFFICE"}
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Attendance History with Search Filters
+GET http://localhost:3000/api/attendance/history?searchFilters={"notes":"office"}
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Attendance History with Ranged Filters
+GET http://localhost:3000/api/attendance/history?rangedFilters=[{"key":"createdAt","start":"2025-01-01T00:00:00Z","end":"2025-01-31T23:59:59Z"}]
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Attendance History with Combined Filters
+GET http://localhost:3000/api/attendance/history?filters={"status":"PRESENT"}&searchFilters={"notes":"office"}&rangedFilters=[{"key":"createdAt","start":"2025-01-01T00:00:00Z","end":"2025-01-31T23:59:59Z"}]
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Create Leave Request
+POST http://localhost:3000/api/leaves
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "type": "VACATION",
+  "startDate": "2025-01-15T00:00:00Z",
+  "endDate": "2025-01-17T23:59:59Z",
+  "reason": "Family vacation"
+}
+
+### Get Leaves with Filters
+GET http://localhost:3000/api/leaves?page=1&limit=10&filters={"status":"PENDING","type":"VACATION"}
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Leaves with Search Filters
+GET http://localhost:3000/api/leaves?searchFilters={"reason":"vacation"}
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Leaves with Ranged Filters
+GET http://localhost:3000/api/leaves?rangedFilters=[{"key":"startDate","start":"2025-01-01T00:00:00Z","end":"2025-01-31T23:59:59Z"}]
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Update Leave Status (Admin Only)
+PATCH http://localhost:3000/api/leaves/LEAVE_ID_HERE
+Authorization: Bearer ADMIN_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "status": "APPROVED"
+}
+
+### Create Meeting
+POST http://localhost:3000/api/meetings
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "title": "Team Standup",
+  "description": "Daily team standup meeting",
+  "startTime": "2025-01-15T09:00:00Z",
+  "endTime": "2025-01-15T09:30:00Z",
+  "location": "Conference Room A",
+  "attendees": ["user1@example.com", "user2@example.com"]
+}
+
+### Get Meetings with Filters
+GET http://localhost:3000/api/meetings?page=1&limit=10&filters={"status":"SCHEDULED"}
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Meetings with Search Filters
+GET http://localhost:3000/api/meetings?searchFilters={"title":"standup","location":"conference"}
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Meetings with Ranged Filters
+GET http://localhost:3000/api/meetings?rangedFilters=[{"key":"startTime","start":"2025-01-01T00:00:00Z","end":"2025-01-31T23:59:59Z"}]
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Create Notice
+POST http://localhost:3000/api/notices
+Authorization: Bearer YOUR_TOKEN_HERE
+Content-Type: application/json
+
+{
+  "title": "Office Holiday Notice",
+  "content": "Office will be closed on January 1st for New Year holiday",
+  "type": "HOLIDAY",
+  "priority": "HIGH"
+}
+
+### Get Notices with Filters
+GET http://localhost:3000/api/notices?page=1&limit=10&filters={"type":"HOLIDAY","priority":"HIGH"}
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Notices with Search Filters
+GET http://localhost:3000/api/notices?searchFilters={"title":"holiday","content":"office"}
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Notices with Ranged Filters
+GET http://localhost:3000/api/notices?rangedFilters=[{"key":"createdAt","start":"2025-01-01T00:00:00Z","end":"2025-01-31T23:59:59Z"}]
+Authorization: Bearer YOUR_TOKEN_HERE
+
+### Get Dashboard Stats (Admin Only)
+GET http://localhost:3000/api/admin/dashboard
+Authorization: Bearer ADMIN_TOKEN_HERE
+
+### Get Attendance Report (Admin Only)
+GET http://localhost:3000/api/admin/reports/USER_ID_HERE?startDate=2025-01-01T00:00:00Z&endDate=2025-01-31T23:59:59Z
+Authorization: Bearer ADMIN_TOKEN_HERE
