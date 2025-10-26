@@ -3,7 +3,7 @@ import { LeaveService } from "../services/leave-service"
 import { formatResponse } from "../utils/response-formatter"
 import { MutationLeaveValue, LeaveQueryParams } from "../validations/leave-validation"
 import { ApplicationVariables } from "../models/user-model"
-import { authMiddleware } from "../middlware/auth-middleware"
+import { authMiddleware } from "../middleware/auth-middleware"
 
 export const leaveController = new Hono<{ Variables: ApplicationVariables }>()
 

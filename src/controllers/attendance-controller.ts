@@ -3,7 +3,7 @@ import { AttendanceService } from "../services/attendance-service"
 import { formatResponse } from "../utils/response-formatter"
 import { ApplicationVariables } from "../models/user-model"
 import { MutationAttendanceValue, AttendanceQueryParams } from "../validations/attendance-validation"
-import { authMiddleware } from "../middlware/auth-middleware"
+import { authMiddleware } from "../middleware/auth-middleware"
 
 export const attendanceController = new Hono<{ Variables: ApplicationVariables }>()
 

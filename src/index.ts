@@ -7,15 +7,22 @@ import { leaveController } from './controllers/leave-controller'
 import { meetingController } from './controllers/meeting-controller'
 import { noticeController } from './controllers/notice-controller'
 import { adminController } from './controllers/admin-controller'
+import { shiftController } from './controllers/master-data/shift-controller'
 import { formatErrorResponse } from './utils/response-formatter'
+import { cors } from 'hono/cors'
 
 const app = new Hono()
+app.use('/*', cors({
+  origin: '*',
+  exposeHeaders: ['Content-Type', 'Authorization'],
+}))
 
 app.get('/', (c) => {
   return c.text('Attendance API - Hello Hono!')
 })
 
-app.route('/', userController)
+app.route('/api/users', userController)
+app.route('/api/master-data/shifts', shiftController)
 app.route('/', attendanceController)
 app.route('/', leaveController)
 app.route('/', meetingController)
@@ -45,4 +52,7 @@ app.onError((err, c) => {
   )
 })
 
-export default app
+export default {
+  port: 8080,
+  fetch: app.fetch
+}

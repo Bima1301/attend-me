@@ -1,15 +1,15 @@
 ### Register User
-POST http://localhost:3000/api/users
+POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
   "name": "John Doe",
-  "email": "john.doe@example.com",
+  "email": "john@doe.com",
   "password": "password"
 }
 
 ### Login User
-POST http://localhost:3000/api/users/login
+POST http://localhost:8080/api/users/login
 Content-Type: application/json
 
 {
@@ -18,17 +18,17 @@ Content-Type: application/json
 }
 
 ### Get User (Set Authorization Bearer token from login response)
-GET http://localhost:3000/api/users/current
-Authorization: Bearer 925337c3-7bdb-4578-98d2-240e57f52e2e
+GET http://localhost:8080/api/users/current
+Authorization: Bearer 2d645394-2040-4c7a-8c78-7b2f94377663
 
 ### Update User (Set Authorization Bearer token from login response)
-PATCH http://localhost:3000/api/users
-Authorization: Bearer 925337c3-7bdb-4578-98d2-240e57f52e2e
+PATCH http://localhost:8080/api/users
+Authorization: Bearer c8309df6-eff5-410a-8a8f-848fba7f2f95
 Content-Type: application/json
 
 {
   "name": "John Doe",
-  "password": "newpassword"
+  "password": "password"
 }
 
 ### Logout User (Set Authorization Bearer token from login response)

@@ -3,7 +3,7 @@ import { formatResponse } from "../utils/response-formatter"
 import { MutationNoticeValue, NoticeQueryParams } from "../validations/notice-validation"
 import { ApplicationVariables } from "../models/user-model"
 import { NoticeService } from "../services/notice-service"
-import { authMiddleware } from "../middlware/auth-middleware"
+import { authMiddleware } from "../middleware/auth-middleware"
 
 export const noticeController = new Hono<{ Variables: ApplicationVariables }>()
 

@@ -1,0 +1,105 @@
+### Master Data - Shift API Testing
+
+### Variables
+@baseUrl = http://localhost:8080
+@token = 260b4364-c4aa-4f23-8e29-4c9cb5e61542
+
+### 1. Create Shift
+POST {{baseUrl}}/api/master-data/shifts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Morning Shift",
+  "clockIn": "08:00",
+  "clockOut": "17:00",
+  "isActive": true
+}
+
+### 2. Create Evening Shift
+POST {{baseUrl}}/api/master-data/shifts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Evening Shift",
+  "clockIn": "18:00",
+  "clockOut": "02:00",
+  "isActive": true
+}
+
+### 3. Create Night Shift
+POST {{baseUrl}}/api/master-data/shifts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Night Shift",
+  "clockIn": "22:00",
+  "clockOut": "06:00",
+  "isActive": true
+}
+
+### 4. Get All Shifts
+GET {{baseUrl}}/api/master-data/shifts
+Authorization: Bearer {{token}}
+
+### 5. Get Active Shifts Only
+GET {{baseUrl}}/api/master-data/shifts/active
+Authorization: Bearer {{token}}
+
+### 6. Get Shift by ID (replace with actual ID)
+GET {{baseUrl}}/api/master-data/shifts/REPLACE_WITH_ACTUAL_ID
+Authorization: Bearer {{token}}
+
+### 7. Update Shift (replace with actual ID)
+PATCH {{baseUrl}}/api/master-data/shifts/REPLACE_WITH_ACTUAL_ID
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Updated Morning Shift",
+  "clockIn": "09:00",
+  "clockOut": "18:00"
+}
+
+### 8. Toggle Shift Status (replace with actual ID)
+PATCH {{baseUrl}}/api/master-data/shifts/REPLACE_WITH_ACTUAL_ID/toggle
+Authorization: Bearer {{token}}
+
+### 9. Delete Shift (replace with actual ID)
+DELETE {{baseUrl}}/api/master-data/shifts/REPLACE_WITH_ACTUAL_ID
+Authorization: Bearer {{token}}
+
+### 10. Test Validation - Invalid Time Format
+POST {{baseUrl}}/api/master-data/shifts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Invalid Shift",
+  "clockIn": "25:00",
+  "clockOut": "17:00"
+}
+
+### 11. Test Validation - Clock Out Before Clock In
+POST {{baseUrl}}/api/master-data/shifts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Invalid Time Order",
+  "clockIn": "17:00",
+  "clockOut": "08:00"
+}
+
+### 12. Test Validation - Duplicate Name
+POST {{baseUrl}}/api/master-data/shifts
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Morning Shift",
+  "clockIn": "08:30",
+  "clockOut": "17:30"
+}

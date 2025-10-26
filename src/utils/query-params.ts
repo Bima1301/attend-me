@@ -20,6 +20,7 @@ export interface PaginationQuery {
 }
 
 export interface BaseQueryParams extends PaginationQuery {
+    rows?: number
     filters?: string
     searchFilters?: string
     rangedFilters?: string
@@ -33,6 +34,7 @@ const paginationSchema = z.object({
 const baseQuerySchema = z.object({
     page: z.string().transform(Number).optional(),
     limit: z.string().transform(Number).optional(),
+    rows: z.string().transform(Number).optional(),
     filters: z.string().optional(),
     searchFilters: z.string().optional(),
     rangedFilters: z.string().optional()
@@ -72,7 +74,8 @@ export class QueryParams {
     static buildWhereClause(
         filters?: FilterQuery,
         searchFilters?: SearchFilterQuery,
-        rangedFilters?: RangedFilter[]
+        rangedFilters?: RangedFilter[],
+        searchMode: 'AND' | 'OR' = 'AND'
     ): any {
         const where: any = {}
 
@@ -87,9 +90,21 @@ export class QueryParams {
         }
 
         if (searchFilters) {
-            Object.entries(searchFilters).forEach(([key, value]) => {
-                where[key] = { contains: value, mode: 'insensitive' }
-            })
+            const searchEntries = Object.entries(searchFilters)
+
+            if (searchEntries.length > 0) {
+                if (searchMode === 'OR') {
+                    // Use OR condition for search across multiple columns
+                    where.OR = searchEntries.map(([key, value]) => ({
+                        [key]: { contains: value, mode: 'insensitive' }
+                    }))
+                } else {
+                    // Use AND condition (default behavior)
+                    searchEntries.forEach(([key, value]) => {
+                        where[key] = { contains: value, mode: 'insensitive' }
+                    })
+                }
+            }
         }
 
         if (rangedFilters && rangedFilters.length > 0) {

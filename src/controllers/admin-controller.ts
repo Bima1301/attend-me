@@ -2,7 +2,7 @@ import { Hono } from "hono"
 import { AdminService } from "../services/admin-service"
 import { formatResponse } from "../utils/response-formatter"
 import { ApplicationVariables } from "../models/user-model"
-import { authMiddleware } from "../middlware/auth-middleware"
+import { authMiddleware } from "../middleware/auth-middleware"
 
 export const adminController = new Hono<{ Variables: ApplicationVariables }>()
 

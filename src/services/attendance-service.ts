@@ -1,7 +1,7 @@
 import { User, WorkMode, AttendanceStatus } from "../generated/prisma"
 import { AttendanceResponse } from "../models/attendance-model"
 import { MutationAttendanceValue, AttendanceQueryParams, Validation } from "../validations/attendance-validation"
-import { QueryParams } from "../utils/query-params"
+import { PaginatedQuery } from "../utils/paginated-query"
 import { HTTPException } from "hono/http-exception"
 import { prismaClient } from "../application/database"
 
@@ -115,31 +115,13 @@ export class AttendanceService {
     }
 
     static async getAttendanceHistory(user: User, query: AttendanceQueryParams): Promise<{ attendances: AttendanceResponse[], totalData: number, totalPage: number }> {
-        const validatedQuery = Validation.ATTENDANCE_QUERY.parse(query) as AttendanceQueryParams
-
-        const filters = QueryParams.parseFilters(validatedQuery.filters)
-        const searchFilters = QueryParams.parseSearchFilters(validatedQuery.searchFilters)
-        const rangedFilters = QueryParams.parseRangedFilters(validatedQuery.rangedFilters)
-
-        const where = QueryParams.buildWhereClause(filters, searchFilters, rangedFilters)
-        where.userId = user.id
-
-        const { skip, take } = QueryParams.buildPagination(validatedQuery.page, validatedQuery.limit)
-
-        const [attendances, totalData] = await Promise.all([
-            prismaClient.attendance.findMany({
-                where,
-                skip,
-                take,
-                orderBy: { createdAt: 'desc' }
-            }),
-            prismaClient.attendance.count({ where })
-        ])
-
-        const totalPage = Math.ceil(totalData / take)
-
-        return {
-            attendances: attendances.map(attendance => ({
+        const result = await PaginatedQuery.execute({
+            query,
+            model: prismaClient.attendance,
+            validationSchema: Validation.ATTENDANCE_QUERY,
+            defaultOrderBy: { createdAt: 'desc' },
+            where: { userId: user.id },
+            transform: (attendance) => ({
                 id: attendance.id,
                 userId: attendance.userId,
                 checkIn: attendance.checkIn,
@@ -149,9 +131,13 @@ export class AttendanceService {
                 notes: attendance.notes,
                 createdAt: attendance.createdAt,
                 updatedAt: attendance.updatedAt
-            })),
-            totalData,
-            totalPage
+            })
+        })
+
+        return {
+            attendances: result.data,
+            totalData: result.totalData,
+            totalPage: result.totalPage
         }
     }
 }

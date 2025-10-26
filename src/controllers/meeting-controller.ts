@@ -3,7 +3,7 @@ import { MeetingService } from "../services/meeting-service"
 import { formatResponse } from "../utils/response-formatter"
 import { MutationMeetingValue, MeetingQueryParams } from "../validations/meeting-validation"
 import { ApplicationVariables } from "../models/user-model"
-import { authMiddleware } from "../middlware/auth-middleware"
+import { authMiddleware } from "../middleware/auth-middleware"
 
 export const meetingController = new Hono<{ Variables: ApplicationVariables }>()
 

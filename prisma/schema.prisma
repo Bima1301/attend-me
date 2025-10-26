@@ -85,6 +85,18 @@ model Notice {
   @@map("notices")
 }
 
+model Shift {
+  id        String   @id @default(uuid())
+  name      String
+  clockIn   String // Format: "HH:MM" (e.g., "08:00")
+  clockOut  String // Format: "HH:MM" (e.g., "17:00")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("shifts")
+}
+
 enum Role {
   ADMIN
   EMPLOYEE
