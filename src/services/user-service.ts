@@ -24,7 +24,7 @@ export class UserService {
         const user = await prismaClient.user.create({
             data: {
                 ...validatedRequest,
-                password: hashedPassword
+                password: hashedPassword,
             }
         })
 

@@ -1,14 +1,14 @@
-import { Shift } from "../../generated/prisma"
-import { ShiftResponse, CreateShiftRequest, UpdateShiftRequest } from "../../models/master-data/shift-model"
-import { CreateShiftValue, UpdateShiftValue, ShiftQueryParams, Validation } from "../../validations/master-data/shift-validation"
+import { ShiftResponse } from "../../models/master-data/shift-model"
+import { MutationShiftValue, Validation } from "../../validations/master-data/shift-validation"
 import { PaginatedQuery } from "../../utils/paginated-query"
 import { bulkDelete } from "../../utils/bulk-delete"
 import { HTTPException } from "hono/http-exception"
 import { prismaClient } from "../../application/database"
+import { BaseQueryParams } from "../../utils/query-params"
 
 export class ShiftService {
-    static async create(request: CreateShiftRequest): Promise<ShiftResponse> {
-        const validatedRequest = Validation.CREATE_SHIFT.parse(request) as CreateShiftValue
+    static async create(request: MutationShiftValue): Promise<ShiftResponse> {
+        const validatedRequest = Validation.SHIFT_MUTATION.parse(request) as MutationShiftValue
 
         // Check if shift name already exists
         const existingShift = await prismaClient.shift.findFirst({
@@ -29,7 +29,7 @@ export class ShiftService {
         return shift
     }
 
-    static async getAll(query: ShiftQueryParams): Promise<{ shifts: ShiftResponse[], totalData: number, totalPage: number }> {
+    static async getAll(query: BaseQueryParams): Promise<{ shifts: ShiftResponse[], totalData: number, totalPage: number }> {
         const result = await PaginatedQuery.execute({
             query,
             model: prismaClient.shift,
@@ -55,8 +55,8 @@ export class ShiftService {
         return shift
     }
 
-    static async update(id: string, request: UpdateShiftRequest): Promise<ShiftResponse> {
-        const validatedRequest = Validation.UPDATE_SHIFT.parse(request) as UpdateShiftValue
+    static async update(id: string, request: MutationShiftValue): Promise<ShiftResponse> {
+        const validatedRequest = Validation.SHIFT_MUTATION.parse(request) as MutationShiftValue
 
         // Check if shift exists
         const existingShift = await prismaClient.shift.findUnique({

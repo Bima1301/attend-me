@@ -18,71 +18,20 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  attendances Attendance[]
-  leaves      Leave[]
+  departmentId String?
+  officeId     String?
 
+  department       Department?       @relation(fields: [departmentId], references: [id])
+  office           Office?           @relation(fields: [officeId], references: [id])
+  shiftAllocations ShiftAllocation[]
+
+  @@index([email])
+  @@index([role])
+  @@index([createdAt])
+  @@index([departmentId])
+  @@index([officeId])
+  @@index([officeId, departmentId])
   @@map("users")
-}
-
-model Attendance {
-  id        String           @id @default(uuid())
-  userId    String
-  checkIn   DateTime?
-  checkOut  DateTime?
-  workMode  WorkMode         @default(OFFICE)
-  status    AttendanceStatus @default(PRESENT)
-  notes     String?
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("attendances")
-}
-
-model Leave {
-  id         String      @id @default(uuid())
-  userId     String
-  type       LeaveType
-  startDate  DateTime
-  endDate    DateTime
-  reason     String
-  status     LeaveStatus @default(PENDING)
-  approvedBy String?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("leaves")
-}
-
-model Meeting {
-  id          String        @id @default(uuid())
-  title       String
-  description String?
-  startTime   DateTime
-  endTime     DateTime
-  location    String?
-  attendees   String[]
-  status      MeetingStatus @default(SCHEDULED)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-
-  @@map("meetings")
-}
-
-model Notice {
-  id        String     @id @default(uuid())
-  title     String
-  content   String
-  type      NoticeType @default(GENERAL)
-  priority  Priority   @default(NORMAL)
-  isActive  Boolean    @default(true)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-
-  @@map("notices")
 }
 
 model Shift {
@@ -94,7 +43,91 @@ model Shift {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@index([isActive])
+  @@index([name])
   @@map("shifts")
+}
+
+model TimeZone {
+  id        String   @id @default(uuid())
+  name      String
+  nameCode  String   @unique
+  timeCode  String   @unique
+  timezone  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  offices Office[]
+
+  @@index([nameCode])
+  @@index([timeCode])
+  @@index([timezone])
+  @@map("time_zones")
+}
+
+model Department {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[]
+
+  @@index([name])
+  @@map("departments")
+}
+
+model Office {
+  id          String   @id @default(uuid())
+  name        String
+  code        String   @unique
+  address     String
+  phone       String
+  email       String   @unique
+  website     String?
+  logo        String?
+  description String?
+  polygonArea Json? // Array of coordinates [[lat, lng], ...]
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  timeZoneId String
+
+  timeZone TimeZone @relation(fields: [timeZoneId], references: [id])
+  users    User[]
+
+  @@index([code])
+  @@index([email])
+  @@index([isActive])
+  @@index([timeZoneId])
+  @@index([name])
+  @@map("offices")
+}
+
+model ShiftAllocation {
+  id                String           @id @default(uuid())
+  userId            String
+  shiftId           String?
+  date              DateTime         @db.Date
+  scheduledClockIn  String // Format: "HH:MM" - scheduled time
+  scheduledClockOut String // Format: "HH:MM" - scheduled time
+  actualClockIn     DateTime? // Actual clock in time (optional)
+  actualClockOut    DateTime? // Actual clock out time (optional)
+  status            AttendanceStatus @default(PRESENT)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
+  @@index([status])
+  @@index([shiftId])
+  @@index([userId, date, status])
+  @@index([date, status])
+  @@map("shift_allocations")
 }
 
 enum Role {
@@ -102,47 +135,11 @@ enum Role {
   EMPLOYEE
 }
 
-enum WorkMode {
-  OFFICE
-  HOME
-}
-
 enum AttendanceStatus {
   PRESENT
-  LATE
-  ABSENT
-}
-
-enum LeaveType {
+  LEAVE
+  DAY_OFF
   SICK
-  VACATION
-  PERSONAL
-  EMERGENCY
-}
-
-enum LeaveStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}
-
-enum MeetingStatus {
-  SCHEDULED
-  ONGOING
-  COMPLETED
-  CANCELLED
-}
-
-enum NoticeType {
-  GENERAL
-  URGENT
-  HOLIDAY
-  POLICY
-}
-
-enum Priority {
-  LOW
-  NORMAL
-  HIGH
-  URGENT
+  ABSENT
+  PERMISSION
 }

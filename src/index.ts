@@ -2,11 +2,6 @@ import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import { ZodError } from 'zod'
 import { userController } from './controllers/user-controller'
-import { attendanceController } from './controllers/attendance-controller'
-import { leaveController } from './controllers/leave-controller'
-import { meetingController } from './controllers/meeting-controller'
-import { noticeController } from './controllers/notice-controller'
-import { adminController } from './controllers/admin-controller'
 import { shiftController } from './controllers/master-data/shift-controller'
 import { formatErrorResponse } from './utils/response-formatter'
 import { cors } from 'hono/cors'
@@ -23,11 +18,6 @@ app.get('/', (c) => {
 
 app.route('/api/users', userController)
 app.route('/api/master-data/shifts', shiftController)
-app.route('/', attendanceController)
-app.route('/', leaveController)
-app.route('/', meetingController)
-app.route('/', noticeController)
-app.route('/', adminController)
 
 app.onError((err, c) => {
   if (err instanceof HTTPException) {
